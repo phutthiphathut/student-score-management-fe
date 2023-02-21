@@ -1,0 +1,9 @@
+.normal-btn {
+  background-color: white;
+  border: 3px solid black;
+  border-radius: 15px;
+  margin: 20px;
+  padding: 15px 40px 15px 40px;
+  font-weight: medium;
+  font-size: 22px;
+}
