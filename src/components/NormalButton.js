@@ -1,7 +1,7 @@
-import '../styles/NormalButton.css';
+import '../App.css';
 
-export default function NormalButton({ label = 'Click' }) {
+export default function NormalButton({ label = "Click" }) {
   return (
-    <button className="normal-btn" type="button">{label}</button>
+    <button className="base-component" type="button">{label}</button>
   );
 }

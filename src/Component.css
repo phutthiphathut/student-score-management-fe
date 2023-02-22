@@ -1,0 +1,16 @@
+.input-container {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  padding: 20px;
+}
+
+.input-box {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.input-title {
+  font-size: 18px;
+  padding-left: 20px;
+}

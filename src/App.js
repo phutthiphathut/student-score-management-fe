@@ -1,10 +1,22 @@
+import ReactDOM from 'react-dom/client';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
 import './App.css';
-import NormalButton from './components/NormalButton.js';
+import LoginPage from './pages/LoginPage';
+import SignUpPage from './pages/SignUpPage';
 
 export default function App() {
   return (
-    <div className="App">
-      <NormalButton label="Sign Up"></NormalButton>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/">
+          <Route index element={<LoginPage />} />
+          <Route path="signup" element={<SignUpPage />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
