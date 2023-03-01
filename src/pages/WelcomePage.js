@@ -2,10 +2,10 @@ import { useNavigate } from 'react-router-dom';
 
 import NormalButton from '../components/NormalButton';
 
-import '../Component.css';
 import '../App.css';
+import '../Component.css';
 
-import abaclogo from '../assets/images/Logoabac.png';
+import abaclogo from '../assets/images/abac_logo.jpg';
 
 export default function WelcomePage() {
   const navigate = useNavigate();
@@ -15,8 +15,8 @@ export default function WelcomePage() {
   };
 
   return (
-    <div className="body-container column-container">
-      <img className="img-welcome-logo" src={abaclogo} alt="abac logo" />
+    <div className="app-container center column-container">
+      <img className="welcome-logo" src={abaclogo} alt="abac logo" />
       <NormalButton label="Get Start!" onClick={onGetStart}></NormalButton>
     </div>
   );

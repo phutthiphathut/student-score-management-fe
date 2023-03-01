@@ -3,12 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import NormalButton from '../components/NormalButton';
 import InputBox from '../components/InputBox';
 
-import '../Component.css';
 import '../App.css';
+import '../Component.css';
 
-import abaclogo from '../assets/images/Logoabac.png';
+import abaclogo from '../assets/images/abac_logo.jpg';
 
-export default function WelcomePage() {
+export default function SignInPage() {
   const navigate = useNavigate();
 
   const onSignUp = () => {
@@ -20,7 +20,7 @@ export default function WelcomePage() {
   };
 
   return (
-    <div className="body-container">
+    <div className="app-container center column-container">
       <div className="base-component body-box column-container">
         <img src={abaclogo} alt="abac logo" />
         <InputBox label="User ID" placeholder="User ID"></InputBox>

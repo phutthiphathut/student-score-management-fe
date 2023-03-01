@@ -5,7 +5,7 @@ import SizedBox from './SizedBox';
 import '../App.css';
 import '../Component.css';
 
-import profileicon from '../assets/images/profileicon.jpg';
+import profileicon from '../assets/images/profileicon.png';
 
 export default function NavBar() {
   const [fullName, setFullName] = useState('John Wick');

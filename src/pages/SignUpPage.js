@@ -2,7 +2,6 @@ import { useNavigate } from 'react-router-dom';
 
 import NormalButton from '../components/NormalButton';
 import InputBox from '../components/InputBox';
-import SizedBox from '../components/SizedBox';
 
 import '../Component.css';
 import '../App.css';
@@ -15,13 +14,16 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="body-container">
+    <div className="app-container center column-container">
       <div className="base-component body-box column-container">
         <h2>Sign Up</h2>
         <div className="row-container">
-          <InputBox label="First name" placeholder="First name"></InputBox>
-          <SizedBox width="50px"></SizedBox>
-          <InputBox label="Last name" placeholder="Last name"></InputBox>
+          <div className="input-half-container">
+            <InputBox label="First name" placeholder="First name"></InputBox>
+          </div>
+          <div className="input-half-container">
+            <InputBox label="Last name" placeholder="Last name"></InputBox>
+          </div>
         </div>
 
         <InputBox label="Email" placeholder="Email"></InputBox>
