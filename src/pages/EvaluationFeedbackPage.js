@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
 import NavBar from '../components/NavBar';
@@ -14,16 +14,11 @@ export default function EvaluationFeedbackPage() {
 
   const [feedback, setFeedback] = useState({});
 
-  useEffect(() => {
-    validationParam();
-    fetchFeedback();
-  }, []);
-
-  const validationParam = () => {
+  const validationParam = useCallback(() => {
     if (isNaN(evaluationId)) navigate('student/courses/:courseId');
-  };
+  }, [evaluationId, navigate]);
 
-  const fetchFeedback = () => {
+  const fetchFeedback = useCallback(() => {
     const data = {
       id: evaluationId,
       evaluation: 'Quiz',
@@ -34,7 +29,12 @@ export default function EvaluationFeedbackPage() {
     };
 
     setFeedback(data);
-  };
+  }, [evaluationId]);
+
+  useEffect(() => {
+    validationParam();
+    fetchFeedback();
+  }, [fetchFeedback, validationParam]);
 
   return (
     <div className="app-container row-container">

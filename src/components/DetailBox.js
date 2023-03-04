@@ -1,7 +1,7 @@
 import '../App.css';
 import '../Component.css';
 
-export default function CourseContainer({ title, detail, score }) {
+export default function DetailBox({ title, detail, score }) {
   return (
     <div className="detail-box-container column-container">
       <div className="detail-title-container row-container">

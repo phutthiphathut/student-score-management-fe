@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
 import NavBar from '../components/NavBar';
@@ -14,16 +14,11 @@ export default function StudentAppealDetailPage() {
 
   const [appeal, setAppeal] = useState({});
 
-  useEffect(() => {
-    validationParam();
-    fetchAppeal();
-  }, []);
+  const validationParam = useCallback(() => {
+    if (isNaN(appealId)) navigate('/student/appeals');
+  }, [appealId, navigate]);
 
-  const validationParam = () => {
-    if (isNaN(appealId)) navigate("/student/appeals");
-  };
-
-  const fetchAppeal = () => {
+  const fetchAppeal = useCallback(() => {
     const data = {
       id: appealId,
       evaluation: 'Quiz',
@@ -34,7 +29,12 @@ export default function StudentAppealDetailPage() {
     };
 
     setAppeal(data);
-  };
+  }, [appealId]);
+
+  useEffect(() => {
+    validationParam();
+    fetchAppeal();
+  }, [fetchAppeal, validationParam]);
 
   return (
     <div className="app-container row-container">

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import NavBar from '../components/NavBar';
@@ -23,11 +23,9 @@ export default function StudentAppealListPage() {
 
   const [appeals, setAppeals] = useState([]);
 
-  useEffect(() => {
-    fetchAppeals();
-  }, []);
 
-  const fetchAppeals = () => {
+
+  const fetchAppeals = useCallback( () => {
     let list = [];
 
     for (let index = 0; index < 5; index++) {
@@ -42,7 +40,11 @@ export default function StudentAppealListPage() {
     }
 
     setAppeals(list);
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchAppeals();
+  }, [fetchAppeals]);
 
   const getStatusIcon = (status) => {
     switch (status) {

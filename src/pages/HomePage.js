@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import NavBar from '../components/NavBar';
@@ -22,11 +22,7 @@ export default function HomePage() {
   const [role, setRole] = useState(Role.Student);
   const [courses, setCourse] = useState([]);
 
-  useEffect(() => {
-    fetchCourses();
-  }, []);
-
-  const fetchCourses = () => {
+  const fetchCourses = useCallback(() => {
     let list = [];
 
     for (let index = 0; index < 5; index++) {
@@ -40,7 +36,11 @@ export default function HomePage() {
     }
 
     setCourse(list);
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchCourses();
+  }, [fetchCourses]);
 
   const getTitle = () => {
     switch (role) {
@@ -60,7 +60,7 @@ export default function HomePage() {
   };
 
   const onClickCourse = (id) => {
-    console.log(id);
+    navigate(`/student/courses/${id}`);
   };
 
   return (
@@ -105,7 +105,7 @@ export default function HomePage() {
                     onClick={() => onClickCourse(course.id)}
                   ></CourseContainer>
                 );
-                default:
+              default:
                 return (
                   <CourseContainer
                     key={course.id}

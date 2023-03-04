@@ -39,6 +39,15 @@
   text-align: center;
 }
 
+.text-area-box {
+  text-align: left;
+  resize: none;
+  width: 100%;
+  border-radius: 50px;
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+
 button:hover {
   background-color: rgb(232, 229, 229);
 }
@@ -55,16 +64,18 @@ button:hover {
 }
 
 .nav-container {
+  left: 0;
+  top: 0;
   width: 300px;
   border-right: 3px solid black;
-  height: 100%;
+  height: 100vh;
   position: fixed;
 }
 
 .content-container {
   margin-left: 300px;
   width: calc(100vw - 300px);
-  height: 100%;
+  height: 100vh;
   padding: 40px 60px;
   justify-content: start;
   box-sizing: border-box;
@@ -99,6 +110,26 @@ button:hover {
 .detail-box-container p {
   font-size: 20px;
   text-align: justify;
+}
+
+.report-box-container {
+  box-sizing: border-box;
+  width: 50%;
+  height: auto;
+  border: solid black 3px;
+  border-radius: 70px;
+  margin: 20px 0px;
+  padding: 15px 40px;
+}
+
+.report-title-container {
+  text-align: left;
+}
+
+.report-box-container h1 {
+  flex: 1;
+  font-size: 32px;
+  font-weight: 400;
 }
 
 .course-container {
@@ -175,6 +206,34 @@ button:hover {
   height: 60px;
   width: 60px;
   margin: 10px;
+}
+
+.stat-graph-container {
+  box-sizing: border-box;
+  width: 100%;
+  height: 500px;
+  border: solid black 3px;
+  border-radius: 70px;
+  margin: 20px 0;
+  padding: 40px;
+}
+
+.stat-details {
+  width: 80%;
+  font-size: 28px;
+  font-weight: 400;
+  text-align: center;
+}
+
+.stat-text:nth-child(odd) {
+  flex: 3;
+  margin: 10px 20px;
+}
+
+.stat-text:nth-child(even) {
+  flex: 1;
+  margin: 10px 20px;
+  text-align: right;
 }
 
 img {

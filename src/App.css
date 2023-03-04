@@ -4,7 +4,7 @@
 
 .app-container {
   width: 100vw;
-  height: 100vh;
+  min-height: 100vh;
 }
 
 .center {
@@ -15,10 +15,12 @@
 
 .left {
   justify-content: left;
+  align-items: left;
 }
 
 .right {
   justify-content: right;
+  align-items: right;
 }
 
 .base-component {
@@ -48,10 +50,12 @@
   width: 100%;
 }
 
+.uppercase {
+  text-transform: uppercase;
+}
+
 h3 {
   font-size: 28px;
   font-weight: 400;
   margin: 14px 0;
 }
-
-

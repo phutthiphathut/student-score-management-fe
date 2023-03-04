@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import '../App.css';
 import '../Component.css';
 
-export default function InputBox({ label , value ,placeholder }) {
+export default function InputBox({ label, value, placeholder }) {
   const [inputValue, setInputValue] = useState(value);
 
   const handleChange = (event) => {
