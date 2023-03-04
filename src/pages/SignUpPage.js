@@ -10,7 +10,7 @@ export default function SignUpPage() {
   const navigate = useNavigate();
 
   const onSignUp = () => {
-    navigate('/home');
+    navigate('/signin');
   };
 
   return (

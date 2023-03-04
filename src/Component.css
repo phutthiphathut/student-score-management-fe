@@ -76,6 +76,31 @@ button:hover {
   box-sizing: border-box;
 }
 
+.detail-box-container {
+  box-sizing: border-box;
+  width: 100%;
+  height: auto;
+  border: solid black 3px;
+  border-radius: 70px;
+  margin: 20px 0;
+  padding: 15px 40px;
+}
+
+.detail-title-container {
+  text-align: right;
+}
+
+.detail-box-container h1 {
+  flex: 1;
+  font-size: 32px;
+  font-weight: 400;
+}
+
+.detail-box-container p {
+  font-size: 20px;
+  text-align: justify;
+}
+
 .course-container {
   margin: 20px 0;
   padding: 15px 40px;
@@ -131,14 +156,58 @@ button:hover {
   width: 100%;
 }
 
+.table-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  box-sizing: border-box;
+  width: 100%;
+  border: solid black 3px;
+  border-radius: 70px;
+  margin: 20px 0;
+}
+
+.action-container {
+  justify-content: space-evenly;
+}
+
 .icon-img {
   height: 60px;
   width: 60px;
-  margin: 0;
+  margin: 10px;
 }
 
 img {
   height: 120px;
   width: 120px;
   margin: 20px;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: auto;
+}
+
+td,
+th {
+  border-left: solid black 3px;
+  padding: 10px 20px;
+  text-align: center;
+  font-size: 28px;
+  font-weight: 500;
+}
+
+td {
+  font-weight: 400;
+}
+
+th {
+  border-top: none;
+  border-bottom: solid black 3px;
+}
+
+td:first-child,
+th:first-child {
+  border-left: none;
 }

@@ -10,7 +10,7 @@ import '../Component.css';
 
 import appealicon from '../assets/images/appealicon.png';
 
-const Roles = {
+const Role = {
   Student: 'Student',
   Teacher: 'Teacher',
   ProgramDirector: 'Program Director'
@@ -19,7 +19,7 @@ const Roles = {
 export default function HomePage() {
   const navigate = useNavigate();
 
-  const [role, setRole] = useState(Roles.Student);
+  const [role, setRole] = useState(Role.Student);
   const [courses, setCourse] = useState([]);
 
   useEffect(() => {
@@ -44,17 +44,19 @@ export default function HomePage() {
 
   const getTitle = () => {
     switch (role) {
-      case Roles.Student:
+      case Role.Student:
         return 'Student Courses 1/2022';
-      case Roles.Teacher:
+      case Role.Teacher:
         return 'Teacher Courses 1/2022';
-      case Roles.ProgramDirector:
+      case Role.ProgramDirector:
         return 'Courses';
+      default:
+        return 'Student Courses 1/2022';
     }
   };
 
   const onClickAppeal = () => {
-    navigate('/student/1234/appeals');
+    navigate('/student/appeals');
   };
 
   const onClickCourse = (id) => {
@@ -67,14 +69,14 @@ export default function HomePage() {
       <div className="content-container column-container">
         <div className="body-header-container row-container">
           <h1>{getTitle()}</h1>
-          {(role === Roles.Student || role === Roles.ProgramDirector) && (
+          {(role === Role.Student || role === Role.ProgramDirector) && (
             <IconButton src={appealicon} onClick={onClickAppeal}></IconButton>
           )}
         </div>
         <div className="course-list">
           {courses.map((course) => {
             switch (role) {
-              case Roles.Student:
+              case Role.Student:
                 return (
                   <CourseContainer
                     key={course.id}
@@ -84,7 +86,7 @@ export default function HomePage() {
                     onClick={() => onClickCourse(course.id)}
                   ></CourseContainer>
                 );
-              case Roles.Teacher:
+              case Role.Teacher:
                 return (
                   <CourseContainer
                     key={course.id}
@@ -94,12 +96,22 @@ export default function HomePage() {
                     onClick={() => onClickCourse(course.id)}
                   ></CourseContainer>
                 );
-              case Roles.ProgramDirector:
+              case Role.ProgramDirector:
                 return (
                   <CourseContainer
                     key={course.id}
                     code={course.code}
                     name={course.name}
+                    onClick={() => onClickCourse(course.id)}
+                  ></CourseContainer>
+                );
+                default:
+                return (
+                  <CourseContainer
+                    key={course.id}
+                    code={course.code}
+                    name={course.name}
+                    grade={course.grade}
                     onClick={() => onClickCourse(course.id)}
                   ></CourseContainer>
                 );

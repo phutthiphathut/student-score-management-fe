@@ -3,7 +3,7 @@ import IconButton from '../components/IconButton';
 import '../App.css';
 import '../Component.css';
 
-import arrowicon from '../assets/images/arrow_right.png';
+import arrowrighticon from '../assets/images/arrowrighticon.png';
 
 export default function CourseContainer({
   code,
@@ -32,7 +32,7 @@ export default function CourseContainer({
 
       <div className="row-container course-arrow">
         <h1>{grade}</h1>
-        <IconButton src={arrowicon}></IconButton>
+        <IconButton src={arrowrighticon}></IconButton>
       </div>
     </div>
   );
