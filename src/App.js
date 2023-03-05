@@ -12,6 +12,7 @@ import EvaluationFeedbackPage from './pages/EvaluationFeedbackPage';
 import EvaluationAppealPage from './pages/EvaluationAppealPage';
 import TeacherCourseDetailPage from './pages/TeacherCourseDetailPage';
 import TeacherCourseStudentDetailPage from './pages/TeacherCourseStudentDetailPage';
+import TeacherCourseAddStudentPage from './pages/TeacherCourseAddStudentPage';
 import TeacherFeedbackPage from './pages/TeacherFeedbackPage';
 import ProgramDirectorAppealListPage from './pages/ProgramDirectorAppealListPage';
 import ProgramDirectorAppealDetailPage from './pages/ProgramDirectorAppealDetailPage';
@@ -56,6 +57,10 @@ export default function App() {
           element={<TeacherCourseStudentDetailPage />}
         />
         <Route
+          path="teacher/courses/:courseId/students/add"
+          element={<TeacherCourseAddStudentPage />}
+        />
+        <Route
           path="teacher/courses/:courseId/evaluation/:evaluationId/feedback"
           element={<TeacherFeedbackPage />}
         />
@@ -64,15 +69,15 @@ export default function App() {
           element={<ProgramDirectorAppealListPage />}
         />
         <Route
-          path="programdirector/appeals/:appealId"
+          path="programdirector/appeals/student/:studentId/evaluation/:evaluationId"
           element={<ProgramDirectorAppealDetailPage />}
         />
         <Route
-          path="programdirector/appeals/:appealId/remark"
+          path="programdirector/appeals/student/:studentId/evaluation/:evaluationId/remark"
           element={<ProgramDirectorAppealRemarkPage />}
         />
         <Route
-          path="programdirector/courses/:courseId/statistics"
+          path="programdirector/courses/:courseId/sections/:section/statistics"
           element={<ProgramDirectorCourseStatisticsPage />}
         />
       </Routes>

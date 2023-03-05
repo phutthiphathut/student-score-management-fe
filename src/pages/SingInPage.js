@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 import NormalButton from '../components/NormalButton';
 import InputBox from '../components/InputBox';
@@ -48,14 +49,14 @@ export default function SignInPage() {
 
   const onSignIn = () => {
     let valid = true;
-    if (form.email.toLowerCase().trim() !== 'test@gmail.com') {
+    if (form.email.toLowerCase().trim() === '') {
       valid = false;
       setEmailError({
         error: true,
         message: 'Invalid email'
       });
     }
-    if (form.password.trim() !== 'test1234') {
+    if (form.password.trim() === '') {
       valid = false;
       setPasswordError({
         error: true,
@@ -63,7 +64,25 @@ export default function SignInPage() {
       });
     }
     if (valid) {
-      navigate('/home');
+      axios
+        .post(process.env.REACT_APP_API_URL + '/api/users/signin', {
+          email_address: form.email,
+          password: form.password
+        })
+        .then((response) => {
+          localStorage.setItem('user', JSON.stringify(response.data));
+          navigate('/home');
+        })
+        .catch((error) => {
+          setEmailError({
+            error: true,
+            message: 'Invalid email'
+          });
+          setPasswordError({
+            error: true,
+            message: 'Invalid password'
+          });
+        });
     }
   };
 

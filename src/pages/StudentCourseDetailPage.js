@@ -55,7 +55,7 @@ export default function StudentCourseDetailPage() {
   };
 
   const onCreateAppeal = (id) => {
-    navigate(`/student/courses/${courseId}/evaluation/evaluation/${id}/appeal`);
+    navigate(`/student/courses/${courseId}/evaluation/${id}/appeal`);
   };
 
   return (

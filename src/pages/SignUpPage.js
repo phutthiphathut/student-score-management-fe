@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 import NormalButton from '../components/NormalButton';
 import InputBox from '../components/InputBox';
@@ -109,7 +110,19 @@ export default function SignUpPage() {
       });
     }
     if (valid) {
-      navigate('/signin');
+      axios
+        .post(process.env.REACT_APP_API_URL + '/api/users/signup', {
+          first_name: form.firstName,
+          last_name: form.lastName,
+          email_address: form.email,
+          password: form.password
+        })
+        .then((response) => {
+          navigate('/signin');
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
   };
 

@@ -1,4 +1,4 @@
-import IconButton from '../components/IconButton';
+import IconButton from './IconButton';
 
 import '../App.css';
 import '../Component.css';

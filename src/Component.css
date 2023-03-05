@@ -46,6 +46,12 @@
   text-align: center;
 }
 
+.score-input-box {
+  padding: 10px 0;
+  width: 65px;
+  text-align: center;
+}
+
 .text-area-box {
   text-align: left;
   resize: none;
@@ -161,7 +167,7 @@ button:hover {
 }
 
 .course-title {
-  flex: 2;
+  flex: 5;
   align-items: start;
 }
 
@@ -219,6 +225,15 @@ button:hover {
 
 .action-container {
   justify-content: space-evenly;
+}
+
+.add-student-button {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  font-size: 32px;
+  font-weight: 500;
 }
 
 .icon-img {

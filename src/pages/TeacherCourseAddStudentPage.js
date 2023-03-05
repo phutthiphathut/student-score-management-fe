@@ -7,10 +7,9 @@ import IconButton from '../components/IconButton';
 import '../App.css';
 import '../Component.css';
 
-import informationicon from '../assets/images/informationicon.png';
 import addicon from '../assets/images/addicon.png';
 
-export default function TeacherCourseDetailPage() {
+export default function TeacherCourseAddStudentPage() {
   const navigate = useNavigate();
 
   const { courseId } = useParams();
@@ -30,8 +29,7 @@ export default function TeacherCourseDetailPage() {
     for (let index = 0; index < 5; index++) {
       list.push({
         id: index + 1,
-        name: 'Alexandria Trival',
-        score: Math.floor(Math.random() * 10) + 1
+        name: 'Alexandria Trival'
       });
     }
 
@@ -43,12 +41,8 @@ export default function TeacherCourseDetailPage() {
     fetchStudents();
   }, [fetchStudents, validationParam]);
 
-  const onAddStudent = () => {
-    navigate(`/teacher/courses/${courseId}/students/add`);
-  };
-
-  const onClickStudent = (id) => {
-    navigate(`/teacher/courses/${courseId}/students/${id}`);
+  const onAddStudent = (id) => {
+    alert('add student ' + id);
   };
 
   return (
@@ -64,7 +58,7 @@ export default function TeacherCourseDetailPage() {
               <tr>
                 <th>Student ID</th>
                 <th>Student Name</th>
-                <th>Total Score</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>
@@ -74,25 +68,14 @@ export default function TeacherCourseDetailPage() {
                   <td>{student.name}</td>
                   <td>
                     <div className="action-container row-container">
-                      {student.score}
                       <IconButton
-                        src={informationicon}
-                        onClick={() => onClickStudent(student.id)}
+                        src={addicon}
+                        onClick={() => onAddStudent(student.id)}
                       ></IconButton>
                     </div>
                   </td>
                 </tr>
               ))}
-              <tr key={0}>
-                <td></td>
-                <td>
-                  <div className="add-student-button" onClick={onAddStudent}>
-                    <IconButton src={addicon}></IconButton>
-                    Add Student
-                  </div>
-                </td>
-                <td></td>
-              </tr>
             </tbody>
           </table>
         </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import SizedBox from './SizedBox';
@@ -20,6 +20,21 @@ export default function NavBar() {
   const onBackToHome = () => {
     navigate('/home');
   };
+
+  const getCurrentUser = useCallback(() => {
+    let user = localStorage.getItem('user');
+
+    if (user !== null) {
+      user = JSON.parse(user);
+      setFullName(`${user.first_name} ${user.last_name}`);
+      setPosition(user.role);
+      setId(user.user_id);
+    }
+  }, []);
+
+  useEffect(() => {
+    getCurrentUser();
+  }, [getCurrentUser]);
 
   return (
     <div className="nav-container column-container">

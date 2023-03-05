@@ -36,6 +36,7 @@ export default function EvaluationAppealPage() {
 
   const sendAppeal = () => {
     alert(appeal);
+    navigate(`/student/courses/${courseId}`);
   };
 
   useEffect(() => {

@@ -3,14 +3,12 @@ import { useParams, useNavigate } from 'react-router-dom';
 
 import NavBar from '../components/NavBar';
 import IconButton from '../components/IconButton';
+import EditableScoreRow from '../components/EditableScoreRow';
 
 import '../App.css';
 import '../Component.css';
 
 import binicon from '../assets/images/binicon.png';
-import commenticon from '../assets/images/commenticon.png';
-import editicon from '../assets/images/editicon.png';
-import sendicon from '../assets/images/sendicon.png';
 
 export default function TeacherCourseStudentDetailPage() {
   const navigate = useNavigate();
@@ -56,6 +54,10 @@ export default function TeacherCourseStudentDetailPage() {
     alert('Student deleted');
   };
 
+  const onSaveScore = (id, score) => {
+    console.log(id, score);
+  };
+
   const onViewFeedback = (id) => {
     navigate(`/teacher/courses/${courseId}/evaluation/${id}/feedback`);
   };
@@ -66,7 +68,7 @@ export default function TeacherCourseStudentDetailPage() {
       <div className="content-container column-container">
         <div className="body-header-container row-container">
           <h1 className="uppercase">{courseName}</h1>
-          <div className="icon-header" >
+          <div className="icon-header">
             <IconButton src={binicon} onClick={onDeleteStudent}></IconButton>
             <h1>
               {studentCode} {studentName}
@@ -85,27 +87,12 @@ export default function TeacherCourseStudentDetailPage() {
             </thead>
             <tbody>
               {evaluations.map((evaluation) => (
-                <tr key={evaluation.id}>
-                  <td>{evaluation.name}</td>
-                  <td>{evaluation.fullScore}</td>
-                  <td>{evaluation.score}</td>
-                  <td>
-                    <div className="action-container row-container">
-                      <IconButton
-                        src={editicon}
-                        onClick={() => onViewFeedback(evaluation.id)}
-                      ></IconButton>
-                      <IconButton
-                        src={commenticon}
-                        onClick={() => onViewFeedback(evaluation.id)}
-                      ></IconButton>
-                      {/* <IconButton
-                        src={sendicon}
-                        onClick={() => onViewFeedback(evaluation.id)}
-                      ></IconButton> */}
-                    </div>
-                  </td>
-                </tr>
+                <EditableScoreRow
+                  key={evaluation.id}
+                  evaluation={evaluation}
+                  onSaveScore={onSaveScore}
+                  onViewFeedback={onViewFeedback}
+                ></EditableScoreRow>
               ))}
             </tbody>
           </table>

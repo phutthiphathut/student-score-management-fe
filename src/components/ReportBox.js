@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import NormalButton from '../components/NormalButton';
+import NormalButton from './NormalButton';
 
 import '../App.css';
 import '../Component.css';

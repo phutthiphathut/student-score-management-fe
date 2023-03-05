@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 import NavBar from '../components/NavBar';
 import CourseContainer from '../components/CourseContainer';
 import IconButton from '../components/IconButton';
-import NormalButton from '../components/NormalButton';
 
 import '../App.css';
 import '../Component.css';
@@ -21,27 +21,55 @@ export default function HomePage() {
   const navigate = useNavigate();
 
   const [role, setRole] = useState(Role.Student);
-  const [courses, setCourse] = useState([]);
+  const [courses, setCourses] = useState([]);
+
+  const getCurrentUserRole = useCallback(() => {
+    let user = localStorage.getItem('user');
+
+    if (user !== null) {
+      user = JSON.parse(user);
+
+      switch (user.role) {
+        case 'student':
+          return setRole(Role.Student);
+        case 'teacher':
+          return setRole(Role.Teacher);
+        case 'program_director':
+          return setRole(Role.ProgramDirector);
+        default:
+          return setRole(Role.Student);
+      }
+    }
+  }, [role]);
 
   const fetchCourses = useCallback(() => {
-    let list = [];
-
-    for (let index = 0; index < 5; index++) {
-      list.push({
-        id: index + 1,
-        code: 'SUB101',
-        name: 'Mathematics',
-        time: '09:00 - 12:00 - M.',
-        grade: 'A'
-      });
+    switch (role) {
+      case Role.Student:
+        break;
+      case Role.Teacher:
+        break;
+      case Role.ProgramDirector:
+        axios
+          .get(process.env.REACT_APP_API_URL + '/api/courses')
+          .then((response) => {
+            if (response.data != null && response.data.length) {
+              setCourses(response.data);
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        break;
+      default:
+        setCourses([]);
+        break;
     }
-
-    setCourse(list);
-  }, []);
+  }, [role]);
 
   useEffect(() => {
+    getCurrentUserRole();
     fetchCourses();
-  }, [fetchCourses]);
+  }, [getCurrentUserRole, fetchCourses]);
 
   const getTitle = () => {
     switch (role) {
@@ -80,24 +108,14 @@ export default function HomePage() {
     }
   };
 
+  const onClickProgramDirectorCourse = (courseId, section) => {
+    navigate(`/programdirector/courses/${courseId}/sections/${section}/statistics`);
+  };
+
   return (
     <div className="app-container row-container">
       <NavBar></NavBar>
       <div className="content-container column-container">
-        <div className="row-container">
-          <NormalButton
-            label={Role.Student}
-            onClick={() => setRole(Role.Student)}
-          ></NormalButton>
-          <NormalButton
-            label={Role.Teacher}
-            onClick={() => setRole(Role.Teacher)}
-          ></NormalButton>
-          <NormalButton
-            label={Role.ProgramDirector}
-            onClick={() => setRole(Role.ProgramDirector)}
-          ></NormalButton>
-        </div>
         <div className="body-header-container row-container">
           <h1>{getTitle()}</h1>
           {(role === Role.Student || role === Role.ProgramDirector) && (
@@ -130,10 +148,15 @@ export default function HomePage() {
               case Role.ProgramDirector:
                 return (
                   <CourseContainer
-                    key={course.id}
-                    code={course.code}
-                    name={course.name}
-                    onClick={() => onClickCourse(course.id)}
+                    key={`${course.course_id}${course.section}`}
+                    code={`${course.course_id} (SEC ${course.section})`}
+                    name={course.course_name}
+                    onClick={() =>
+                      onClickProgramDirectorCourse(
+                        course.course_id,
+                        course.section
+                      )
+                    }
                   ></CourseContainer>
                 );
               default:

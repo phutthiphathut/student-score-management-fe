@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 import NavBar from '../components/NavBar';
 import DetailButtonBox from '../components/DetailButtonBox';
@@ -7,48 +8,110 @@ import DetailButtonBox from '../components/DetailButtonBox';
 import '../App.css';
 import '../Component.css';
 
+const Status = {
+  Pending: 'Pending',
+  Accepted: 'Accepted',
+  Denied: 'Denied'
+};
+
+const defaultAppeal = {
+  student_id: 0,
+  evaluation_id: 0,
+  reason: '',
+  remark: '',
+  course_id: '',
+  course_name: '',
+  evaluation_title: '',
+  full_score: 0,
+  eval_received_score: '00.00'
+};
+
 export default function ProgramDirectorAppealDetailPage() {
   const navigate = useNavigate();
 
-  const { appealId } = useParams();
+  const { studentId, evaluationId } = useParams();
 
-  const [courseCode, setCourseCode] = useState('CSX2007');
-  const [courseName, setCourseName] = useState('Mathematics');
-  const [appeal, setAppeal] = useState({});
+  const [appeal, setAppeal] = useState(defaultAppeal);
 
   const validationParam = useCallback(() => {
-    if (isNaN(appealId) || appealId <= 0) {
+    if (isNaN(studentId) || studentId <= 0) {
       navigate('/programdirector/appeals');
     }
-  }, [appealId, navigate]);
+    if (isNaN(evaluationId) || evaluationId <= 0) {
+      navigate('/programdirector/appeals');
+    }
+  }, [studentId, evaluationId, navigate]);
 
   const fetchAppeal = useCallback(() => {
-    const data = {
-      id: appealId,
-      studentId: 1000000 + appealId,
-      evaluation: 'Quiz',
-      detail:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-      score: 7,
-      fullScore: 10
-    };
-
-    setAppeal(data);
-  }, [appealId]);
+    axios
+      .get(
+        process.env.REACT_APP_API_URL +
+          `/api/appeals/student/${studentId}/evaluation/${evaluationId}`
+      )
+      .then((response) => {
+        if (response.data != null) {
+          setAppeal(response.data);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        navigate('/programdirector/appeals');
+      });
+  }, []);
 
   useEffect(() => {
     validationParam();
     fetchAppeal();
   }, [fetchAppeal, validationParam]);
 
-  const onApprovedAppeal = () => {
-    alert('Appeal approved');
-    navigate(`/programdirector/appeals/${appealId}/remark`);
+  const onAcceptedAppeal = () => {
+    let user = localStorage.getItem('user');
+
+    if (user !== null) {
+      user = JSON.parse(user);
+
+      axios
+        .put(
+          process.env.REACT_APP_API_URL +
+            `/api/appeals/student/${studentId}/evaluation/${evaluationId}/status`,
+          { pd_id: user.user_id, status: Status.Accepted }
+        )
+        .then((response) => {
+          if (response.data != null) {
+            navigate(
+              `/programdirector/appeals/student/${studentId}/evaluation/${evaluationId}/remark`
+            );
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   };
 
-  const onRejectedAppeal = () => {
-    alert('Appeal rejected');
-    navigate(`/programdirector/appeals/${appealId}/remark`);
+  const onDeniedAppeal = () => {
+    let user = localStorage.getItem('user');
+
+    if (user !== null) {
+      user = JSON.parse(user);
+
+      axios
+        .put(
+          process.env.REACT_APP_API_URL +
+            `/api/appeals/student/${studentId}/evaluation/${evaluationId}/status`,
+          { pd_id: user.user_id, status: Status.Denied }
+        )
+        .then((response) => {
+          if (response.data != null) {
+            navigate(
+              `/programdirector/appeals/student/${studentId}/evaluation/${evaluationId}/remark`
+            );
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   };
 
   return (
@@ -57,15 +120,18 @@ export default function ProgramDirectorAppealDetailPage() {
       <div className="content-container column-container">
         <div className="body-header-container row-container space-between">
           <h1>Appeal Reason</h1>
-          <h1><span className="uppercase">{courseCode}</span> {courseName}</h1>
+          <h1>
+            <span className="uppercase">{appeal.course_id}</span>{' '}
+            {appeal.course_name}
+          </h1>
         </div>
         <DetailButtonBox
-          title={appeal.evaluation}
-          detail={appeal.detail}
-          score={`${appeal.score}/${appeal.fullScore}`}
-          code={appeal.studentId}
-          onApproved={onApprovedAppeal}
-          onRejected={onRejectedAppeal}
+          title={appeal.evaluation_title}
+          detail={appeal.reason}
+          score={`${appeal.eval_received_score}/${appeal.full_score}`}
+          code={appeal.student_id}
+          onAccepted={onAcceptedAppeal}
+          onDenied={onDeniedAppeal}
         ></DetailButtonBox>
       </div>
     </div>

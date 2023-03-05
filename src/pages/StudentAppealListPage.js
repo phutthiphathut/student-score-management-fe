@@ -1,4 +1,4 @@
-import React, { useEffect, useState,useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import NavBar from '../components/NavBar';
@@ -9,13 +9,13 @@ import '../Component.css';
 
 import commenticon from '../assets/images/commenticon.png';
 import pendingicon from '../assets/images/pendingicon.png';
-import approveicon from '../assets/images/approveicon.png';
-import rejecticon from '../assets/images/rejecticon.png';
+import accepticon from '../assets/images/accepticon.png';
+import denyicon from '../assets/images/denyicon.png';
 
 const Status = {
   Pending: 'Pending',
-  Approved: 'Approved',
-  Rejected: 'Rejected'
+  Accepted: 'Accepted',
+  Denied: 'Denied'
 };
 
 export default function StudentAppealListPage() {
@@ -23,7 +23,7 @@ export default function StudentAppealListPage() {
 
   const [appeals, setAppeals] = useState([]);
 
-  const fetchAppeals = useCallback( () => {
+  const fetchAppeals = useCallback(() => {
     let list = [];
 
     for (let index = 0; index < 5; index++) {
@@ -48,10 +48,10 @@ export default function StudentAppealListPage() {
     switch (status) {
       case Status.Pending:
         return pendingicon;
-      case Status.Approved:
-        return approveicon;
-      case Status.Rejected:
-        return rejecticon;
+      case Status.Accepted:
+        return accepticon;
+      case Status.Denied:
+        return denyicon;
       default:
         return pendingicon;
     }

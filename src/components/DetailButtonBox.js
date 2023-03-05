@@ -1,18 +1,18 @@
-import IconButton from '../components/IconButton';
+import IconButton from './IconButton';
 
 import '../App.css';
 import '../Component.css';
 
-import approveicon from '../assets/images/approveicon.png';
-import rejecticon from '../assets/images/rejecticon.png';
+import accepticon from '../assets/images/accepticon.png';
+import denyicon from '../assets/images/denyicon.png';
 
 export default function DetailButtonBox({
   title,
   detail,
   code,
   score,
-  onApproved,
-  onRejected
+  onAccepted,
+  onDenied
 }) {
   return (
     <div className="detail-box-container column-container">
@@ -23,8 +23,8 @@ export default function DetailButtonBox({
       </div>
       <p>{detail}</p>
       <div className="row-container space-evenly">
-        <IconButton src={approveicon} onClick={onApproved}></IconButton>
-        <IconButton src={rejecticon} onClick={onRejected}></IconButton>
+        <IconButton src={accepticon} onClick={onAccepted}></IconButton>
+        <IconButton src={denyicon} onClick={onDenied}></IconButton>
       </div>
     </div>
   );
