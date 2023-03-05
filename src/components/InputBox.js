@@ -3,11 +3,23 @@ import React, { useState } from 'react';
 import '../App.css';
 import '../Component.css';
 
-export default function InputBox({ label, value, placeholder }) {
+export default function InputBox({
+  label,
+  value,
+  placeholder,
+  name,
+  onValueChange,
+  type = 'text',
+  error = false,
+  errMessage = 'Invalid'
+}) {
   const [inputValue, setInputValue] = useState(value);
 
   const handleChange = (event) => {
-    setInputValue(event.target.value);
+    const newValue = event.target.value;
+
+    setInputValue(newValue);
+    onValueChange(newValue);
   };
 
   return (
@@ -17,11 +29,13 @@ export default function InputBox({ label, value, placeholder }) {
       </label>
       <input
         className="base-component input-box"
-        type="text"
+        name={name}
+        type={type}
         placeholder={placeholder}
         value={inputValue}
         onChange={handleChange}
       />
+      {error && <h3 className="input-error-msg">{errMessage}</h3>}
     </div>
   );
 }

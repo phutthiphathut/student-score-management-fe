@@ -7,7 +7,7 @@ import ReportBox from '../components/ReportBox';
 import '../App.css';
 import '../Component.css';
 
-export default function ProgramDirectorAppealPage() {
+export default function ProgramDirectorAppealRemarkPage() {
   const navigate = useNavigate();
 
   const { appealId } = useParams();
@@ -15,7 +15,9 @@ export default function ProgramDirectorAppealPage() {
   const [appeal, setAppeal] = useState();
 
   const validationParam = useCallback(() => {
-    if (isNaN(appealId)) navigate('programdirector/courses/:courseId');
+    if (isNaN(appealId) || appealId <= 0) {
+      navigate(`/programdirector/appeals`);
+    }
   }, [appealId, navigate]);
 
   const fetchAppeal = useCallback(() => {
@@ -29,8 +31,9 @@ export default function ProgramDirectorAppealPage() {
     setAppeal(data.detail);
   }, []);
 
-  const sendAppeal = () => {
+  const sendAppealRemark = () => {
     alert(appeal);
+    navigate('/programdirector/appeals');
   };
 
   useEffect(() => {
@@ -53,7 +56,7 @@ export default function ProgramDirectorAppealPage() {
           title="Content"
           value={appeal}
           onValueChange={onChangeHandler}
-          onSubmit={sendAppeal}
+          onSubmit={sendAppealRemark}
         ></ReportBox>
       </div>
     </div>

@@ -10,13 +10,18 @@ import '../Component.css';
 export default function TeacherFeedbackPage() {
   const navigate = useNavigate();
 
-  const { evaluationId } = useParams();
+  const { courseId, evaluationId } = useParams();
 
   const [feedback, setFeedback] = useState();
 
   const validationParam = useCallback(() => {
-    if (isNaN(evaluationId)) navigate('teacher/courses/:courseId');
-  }, [evaluationId, navigate]);
+    if (isNaN(courseId) || courseId <= 0) {
+      navigate('/home');
+    }
+    if (isNaN(evaluationId) || evaluationId <= 0) {
+      navigate(`/teacher/courses/${courseId}`);
+    }
+  }, [courseId, evaluationId, navigate]);
 
   const fetchFeedback = useCallback(() => {
     const data = {
@@ -31,6 +36,7 @@ export default function TeacherFeedbackPage() {
 
   const sendFeedback = () => {
     alert(feedback);
+    navigate(`/teacher/courses/${courseId}`);
   };
 
   useEffect(() => {

@@ -10,13 +10,18 @@ import '../Component.css';
 export default function EvaluationFeedbackPage() {
   const navigate = useNavigate();
 
-  const { evaluationId } = useParams();
+  const { courseId, evaluationId } = useParams();
 
   const [feedback, setFeedback] = useState({});
 
   const validationParam = useCallback(() => {
-    if (isNaN(evaluationId)) navigate('student/courses/:courseId');
-  }, [evaluationId, navigate]);
+    if (isNaN(courseId) || courseId <= 0) {
+      navigate('/home');
+    }
+    if (isNaN(evaluationId) || evaluationId <= 0) {
+      navigate(`/student/courses/${courseId}`);
+    }
+  }, [courseId, evaluationId, navigate]);
 
   const fetchFeedback = useCallback(() => {
     const data = {

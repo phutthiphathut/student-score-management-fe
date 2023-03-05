@@ -10,13 +10,18 @@ import '../Component.css';
 export default function EvaluationAppealPage() {
   const navigate = useNavigate();
 
-  const { evaluationId } = useParams();
+  const { courseId, evaluationId } = useParams();
 
   const [appeal, setAppeal] = useState();
 
   const validationParam = useCallback(() => {
-    if (isNaN(evaluationId)) navigate('student/courses/:courseId');
-  }, [evaluationId, navigate]);
+    if (isNaN(courseId) || courseId <= 0) {
+      navigate('/home');
+    }
+    if (isNaN(evaluationId) || evaluationId <= 0) {
+      navigate(`/student/courses/${courseId}`);
+    }
+  }, [courseId, evaluationId, navigate]);
 
   const fetchAppeal = useCallback(() => {
     const data = {

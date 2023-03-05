@@ -1,4 +1,4 @@
-import React, { useEffect, useState,useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import NavBar from '../components/NavBar';
@@ -18,21 +18,20 @@ const Status = {
   Rejected: 'Rejected'
 };
 
-export default function StudentAppealListPage() {
+export default function ProgramDirectorAppealListPage() {
   const navigate = useNavigate();
 
   const [appeals, setAppeals] = useState([]);
 
-  const fetchAppeals = useCallback( () => {
+  const fetchAppeals = useCallback(() => {
     let list = [];
 
     for (let index = 0; index < 5; index++) {
       list.push({
         id: index + 1,
+        studentId: 1000000 + index,
         code: 'SUB10' + (index + 1),
         evaluation: 'Quiz',
-        score: 7,
-        fullScore: 10,
         status: Status.Pending
       });
     }
@@ -58,7 +57,7 @@ export default function StudentAppealListPage() {
   };
 
   const onAppealRemark = (id) => {
-    navigate(`/student/appeals/${id}`);
+    navigate(`/programdirector/appeals/${id}`);
   };
 
   return (
@@ -66,26 +65,24 @@ export default function StudentAppealListPage() {
       <NavBar></NavBar>
       <div className="content-container column-container">
         <div className="body-header-container row-container">
-          <h1>Appeal Result</h1>
+          <h1>Appeal List</h1>
         </div>
         <div className="table-container">
           <table id="data-table">
             <thead>
               <tr>
+                <th>Student ID</th>
                 <th>Course Code</th>
                 <th>Evaluation</th>
-                <th>Score</th>
-                <th>Result</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {appeals.map((appeal) => (
                 <tr key={appeal.id}>
+                  <td>{appeal.studentId}</td>
                   <td>{appeal.code}</td>
                   <td>{appeal.evaluation}</td>
-                  <td>
-                    {appeal.score}/{appeal.fullScore}
-                  </td>
                   <td>
                     <div className="action-container row-container">
                       <IconButton

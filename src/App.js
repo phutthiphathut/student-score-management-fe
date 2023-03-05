@@ -10,8 +10,13 @@ import StudentCourseDetailPage from './pages/StudentCourseDetailPage';
 import StudentCourseStatisticsPage from './pages/StudentCourseStatisticsPage';
 import EvaluationFeedbackPage from './pages/EvaluationFeedbackPage';
 import EvaluationAppealPage from './pages/EvaluationAppealPage';
+import TeacherCourseDetailPage from './pages/TeacherCourseDetailPage';
+import TeacherCourseStudentDetailPage from './pages/TeacherCourseStudentDetailPage';
 import TeacherFeedbackPage from './pages/TeacherFeedbackPage';
-import ProgramDirectorAppealPage from './pages/ProgramDirectorAppealPage';
+import ProgramDirectorAppealListPage from './pages/ProgramDirectorAppealListPage';
+import ProgramDirectorAppealDetailPage from './pages/ProgramDirectorAppealDetailPage';
+import ProgramDirectorAppealRemarkPage from './pages/ProgramDirectorAppealRemarkPage';
+import ProgramDirectorCourseStatisticsPage from './pages/ProgramDirectorCourseStatisticsPage';
 
 export default function App() {
   return (
@@ -43,12 +48,32 @@ export default function App() {
           element={<EvaluationAppealPage />}
         />
         <Route
+          path="teacher/courses/:courseId"
+          element={<TeacherCourseDetailPage />}
+        />
+        <Route
+          path="teacher/courses/:courseId/students/:studentId"
+          element={<TeacherCourseStudentDetailPage />}
+        />
+        <Route
           path="teacher/courses/:courseId/evaluation/:evaluationId/feedback"
           element={<TeacherFeedbackPage />}
         />
         <Route
-          path="programdirector/courses/:courseId/appeals/:appealId/remark"
-          element={<ProgramDirectorAppealPage />}
+          path="programdirector/appeals"
+          element={<ProgramDirectorAppealListPage />}
+        />
+        <Route
+          path="programdirector/appeals/:appealId"
+          element={<ProgramDirectorAppealDetailPage />}
+        />
+        <Route
+          path="programdirector/appeals/:appealId/remark"
+          element={<ProgramDirectorAppealRemarkPage />}
+        />
+        <Route
+          path="programdirector/courses/:courseId/statistics"
+          element={<ProgramDirectorCourseStatisticsPage />}
         />
       </Routes>
     </BrowserRouter>

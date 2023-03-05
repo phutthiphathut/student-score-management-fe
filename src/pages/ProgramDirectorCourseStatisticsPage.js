@@ -7,11 +7,13 @@ import VerticleBarGraph from '../components/VerticleBarGraph';
 import '../App.css';
 import '../Component.css';
 
-export default function StudentCourseStatisticsPage() {
+export default function ProgramDirectorCourseStatisticsPage() {
   const navigate = useNavigate();
 
   const { courseId } = useParams();
 
+  const [courseCode, setCourseCode] = useState('CSX2007');
+  const [courseName, setCourseName] = useState('Mathematics');
   const [evaluations, setEvaluations] = useState([]);
   const [statistics, setStatistics] = useState({});
 
@@ -24,10 +26,10 @@ export default function StudentCourseStatisticsPage() {
   const fetchEvaluations = useCallback(() => {
     let list = [];
 
-    for (let index = 0; index < 5; index++) {
+    for (let index = 0; index < 15; index++) {
       list.push({
         id: index + 1,
-        title: `Quiz ${index + 1}`,
+        title: `Student ${index + 1}`,
         value: Math.random() * 100
       });
     }
@@ -121,12 +123,15 @@ export default function StudentCourseStatisticsPage() {
   useEffect(() => {
     fetchStatistics();
   }, [evaluations, fetchStatistics]);
+
   return (
     <div className="app-container row-container">
       <NavBar></NavBar>
       <div className="content-container column-container">
         <div className="body-header-container row-container">
-          <h1>Your Statistics</h1>
+          <h1>
+            <span className="uppercase">{courseCode}</span> {courseName}
+          </h1>
         </div>
         <VerticleBarGraph dataset={evaluations}></VerticleBarGraph>
         <div className="stat-details column-container">
@@ -171,7 +176,7 @@ export default function StudentCourseStatisticsPage() {
             <div className="stat-text">{statistics.stdDeviation}</div>
           </div>
           <div className="row-container">
-            <div className="stat-text">Total Test</div>
+            <div className="stat-text">Total Student</div>
             <div className="stat-text">:</div>
             <div className="stat-text">{statistics.count}</div>
           </div>

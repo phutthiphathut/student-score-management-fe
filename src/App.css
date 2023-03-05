@@ -23,6 +23,14 @@
   align-items: right;
 }
 
+.space-between {
+  justify-content: space-between;
+}
+
+.space-evenly {
+  justify-content: space-evenly;
+}
+
 .base-component {
   background-color: white;
   border: 3px solid black;

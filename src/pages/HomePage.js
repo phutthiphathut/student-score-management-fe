@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import NavBar from '../components/NavBar';
 import CourseContainer from '../components/CourseContainer';
 import IconButton from '../components/IconButton';
+import NormalButton from '../components/NormalButton';
 
 import '../App.css';
 import '../Component.css';
@@ -56,17 +57,47 @@ export default function HomePage() {
   };
 
   const onClickAppeal = () => {
-    navigate('/student/appeals');
+    switch (role) {
+      case Role.Student:
+        return navigate('/student/appeals');
+      case Role.ProgramDirector:
+        return navigate('/programdirector/appeals');
+      default:
+        return navigate('/student/appeals');
+    }
   };
 
   const onClickCourse = (id) => {
-    navigate(`/student/courses/${id}`);
+    switch (role) {
+      case Role.Student:
+        return navigate(`/student/courses/${id}`);
+      case Role.Teacher:
+        return navigate(`/teacher/courses/${id}`);
+      case Role.ProgramDirector:
+        return navigate(`/programdirector/courses/${id}/statistics`);
+      default:
+        return navigate(`/student/courses/${id}`);
+    }
   };
 
   return (
     <div className="app-container row-container">
       <NavBar></NavBar>
       <div className="content-container column-container">
+        <div className="row-container">
+          <NormalButton
+            label={Role.Student}
+            onClick={() => setRole(Role.Student)}
+          ></NormalButton>
+          <NormalButton
+            label={Role.Teacher}
+            onClick={() => setRole(Role.Teacher)}
+          ></NormalButton>
+          <NormalButton
+            label={Role.ProgramDirector}
+            onClick={() => setRole(Role.ProgramDirector)}
+          ></NormalButton>
+        </div>
         <div className="body-header-container row-container">
           <h1>{getTitle()}</h1>
           {(role === Role.Student || role === Role.ProgramDirector) && (

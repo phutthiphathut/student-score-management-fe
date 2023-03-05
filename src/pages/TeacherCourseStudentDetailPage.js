@@ -7,23 +7,29 @@ import IconButton from '../components/IconButton';
 import '../App.css';
 import '../Component.css';
 
-import graphicon from '../assets/images/graphicon.png';
+import binicon from '../assets/images/binicon.png';
 import commenticon from '../assets/images/commenticon.png';
-import exclamationicon from '../assets/images/exclamationmarkicon.png';
+import editicon from '../assets/images/editicon.png';
+import sendicon from '../assets/images/sendicon.png';
 
-export default function StudentCourseDetailPage() {
+export default function TeacherCourseStudentDetailPage() {
   const navigate = useNavigate();
 
-  const { courseId } = useParams();
+  const { courseId, studentId } = useParams();
 
   const [courseName, setCourseName] = useState('Mathematics');
+  const [studentCode, setStudentCode] = useState('10100001');
+  const [studentName, setStudentName] = useState('Alexandria Trival');
   const [evaluations, setEvaluations] = useState([]);
 
   const validationParam = useCallback(() => {
     if (isNaN(courseId) || courseId <= 0) {
       navigate('/home');
     }
-  }, [courseId, navigate]);
+    if (isNaN(studentId) || studentId <= 0) {
+      navigate(`/teacher/courses/${courseId}`);
+    }
+  }, [courseId, studentId, navigate]);
 
   const fetchEvaluations = useCallback(() => {
     let list = [];
@@ -46,16 +52,12 @@ export default function StudentCourseDetailPage() {
     fetchEvaluations();
   }, [fetchEvaluations, validationParam]);
 
-  const onViewStatistics = () => {
-    navigate(`/student/courses/${courseId}/statistics`);
+  const onDeleteStudent = () => {
+    alert('Student deleted');
   };
 
   const onViewFeedback = (id) => {
-    navigate(`/student/courses/${courseId}/evaluation/${id}/feedback`);
-  };
-
-  const onCreateAppeal = (id) => {
-    navigate(`/student/courses/${courseId}/evaluation/evaluation/${id}/appeal`);
+    navigate(`/teacher/courses/${courseId}/evaluation/${id}/feedback`);
   };
 
   return (
@@ -64,7 +66,12 @@ export default function StudentCourseDetailPage() {
       <div className="content-container column-container">
         <div className="body-header-container row-container">
           <h1 className="uppercase">{courseName}</h1>
-          <IconButton src={graphicon} onClick={onViewStatistics}></IconButton>
+          <div className="icon-header" >
+            <IconButton src={binicon} onClick={onDeleteStudent}></IconButton>
+            <h1>
+              {studentCode} {studentName}
+            </h1>
+          </div>
         </div>
         <div className="table-container">
           <table id="data-table">
@@ -85,13 +92,17 @@ export default function StudentCourseDetailPage() {
                   <td>
                     <div className="action-container row-container">
                       <IconButton
-                        src={commenticon}
+                        src={editicon}
                         onClick={() => onViewFeedback(evaluation.id)}
                       ></IconButton>
                       <IconButton
-                        src={exclamationicon}
-                        onClick={() => onCreateAppeal(evaluation.id)}
+                        src={commenticon}
+                        onClick={() => onViewFeedback(evaluation.id)}
                       ></IconButton>
+                      {/* <IconButton
+                        src={sendicon}
+                        onClick={() => onViewFeedback(evaluation.id)}
+                      ></IconButton> */}
                     </div>
                   </td>
                 </tr>
