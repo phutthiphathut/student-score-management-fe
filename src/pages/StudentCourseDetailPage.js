@@ -4,13 +4,12 @@ import axios from 'axios';
 
 import NavBar from '../components/NavBar';
 import IconButton from '../components/IconButton';
+import SubScoreRow from '../components/SubScoreRow';
 
 import '../App.css';
 import '../Component.css';
 
 import graphicon from '../assets/images/graphicon.png';
-import commenticon from '../assets/images/commenticon.png';
-import exclamationicon from '../assets/images/exclamationmarkicon.png';
 
 export default function StudentCourseDetailPage() {
   const navigate = useNavigate();
@@ -76,7 +75,7 @@ export default function StudentCourseDetailPage() {
       `/student/courses/${courseId}/sections/${section}/evaluations/${evaluationId}/appeal`
     );
   };
-
+ 
   return (
     <div className="app-container row-container">
       <NavBar></NavBar>
@@ -97,23 +96,12 @@ export default function StudentCourseDetailPage() {
             </thead>
             <tbody>
               {evaluations.map((evaluation) => (
-                <tr key={evaluation.evaluation_id}>
-                  <td>{evaluation.evaluation_title}</td>
-                  <td>{evaluation.full_score}</td>
-                  <td>{evaluation.eval_received_score}</td>
-                  <td>
-                    <div className="action-container row-container">
-                      <IconButton
-                        src={commenticon}
-                        onClick={() => onViewFeedback(evaluation.evaluation_id)}
-                      ></IconButton>
-                      <IconButton
-                        src={exclamationicon}
-                        onClick={() => onCreateAppeal(evaluation.evaluation_id)}
-                      ></IconButton>
-                    </div>
-                  </td>
-                </tr>
+                <SubScoreRow
+                  key={evaluation.evaluation_id}
+                  evaluation={evaluation}
+                  onViewFeedback={onViewFeedback}
+                  onCreateAppeal={onCreateAppeal}
+                ></SubScoreRow>
               ))}
             </tbody>
           </table>

@@ -231,6 +231,16 @@ button:hover {
   justify-content: space-evenly;
 }
 
+.icon-container {
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.icon-container img {
+  height: 40px;
+  width: 40px;
+}
+
 .add-student-button {
   display: flex;
   flex-direction: row;

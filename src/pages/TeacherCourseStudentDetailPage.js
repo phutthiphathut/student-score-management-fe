@@ -4,7 +4,7 @@ import axios from 'axios';
 
 import NavBar from '../components/NavBar';
 import IconButton from '../components/IconButton';
-import EditableScoreRow from '../components/EditableScoreRow';
+import EditableSubScoreRow from '../components/EditableSubScoreRow';
 
 import '../App.css';
 import '../Component.css';
@@ -93,6 +93,26 @@ export default function TeacherCourseStudentDetailPage() {
     [studentId, fetchEvaluations]
   );
 
+  const onSaveRubricScore = useCallback(
+    (rubricId, score) => {
+      axios
+        .put(
+          process.env.REACT_APP_API_URL +
+            `/api/teacher/rubrics/${rubricId}/students/${studentId}/score`,
+          { score: score }
+        )
+        .then((response) => {
+          if (response.data != null) {
+            fetchEvaluations();
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    [studentId, fetchEvaluations]
+  );
+
   const onViewFeedback = (evaluationId) => {
     navigate(
       `/teacher/courses/${courseId}/sections/${section}/evaluations/${evaluationId}/students/${studentCode}/feedback`
@@ -124,12 +144,13 @@ export default function TeacherCourseStudentDetailPage() {
             </thead>
             <tbody>
               {evaluations.map((evaluation) => (
-                <EditableScoreRow
+                <EditableSubScoreRow
                   key={evaluation.evaluation_id}
                   evaluation={evaluation}
                   onSaveScore={onSaveScore}
                   onViewFeedback={onViewFeedback}
-                ></EditableScoreRow>
+                  onRubricScoreChange={onSaveRubricScore}
+                ></EditableSubScoreRow>
               ))}
             </tbody>
           </table>
