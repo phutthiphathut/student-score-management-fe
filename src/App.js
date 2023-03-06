@@ -29,23 +29,23 @@ export default function App() {
         <Route path="home" element={<HomePage />} />
         <Route path="student/appeals" element={<StudentAppealListPage />} />
         <Route
-          path="student/appeals/:appealId"
+          path="student/appeals/evaluations/:evaluationId"
           element={<StudentAppealDetailPage />}
         />
         <Route
-          path="student/courses/:courseId"
+          path="student/courses/:courseId/sections/:section"
           element={<StudentCourseDetailPage />}
         />
         <Route
-          path="student/courses/:courseId/statistics"
+          path="student/courses/:courseId/sections/:section/statistics"
           element={<StudentCourseStatisticsPage />}
         />
         <Route
-          path="student/courses/:courseId/evaluation/:evaluationId/feedback"
+          path="student/courses/:courseId/sections/:section/evaluations/:evaluationId/feedback"
           element={<EvaluationFeedbackPage />}
         />
         <Route
-          path="student/courses/:courseId/evaluation/:evaluationId/appeal"
+          path="student/courses/:courseId/sections/:section/evaluations/:evaluationId/appeal"
           element={<EvaluationAppealPage />}
         />
         <Route

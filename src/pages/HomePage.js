@@ -45,39 +45,54 @@ export default function HomePage() {
   }, []);
 
   const fetchCourses = useCallback(() => {
-    switch (role) {
-      case Role.Student:
-        break;
-      case Role.Teacher:
-        axios
-          .get(
-            process.env.REACT_APP_API_URL +
-              `/api/teacher/${user.user_id}/courses`
-          )
-          .then((response) => {
-            if (response.data != null && response.data.length) {
-              setCourses(response.data);
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-        break;
-      case Role.ProgramDirector:
-        axios
-          .get(process.env.REACT_APP_API_URL + '/api/pd/courses')
-          .then((response) => {
-            if (response.data != null && response.data.length) {
-              setCourses(response.data);
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-        break;
-      default:
-        setCourses([]);
-        break;
+    if (user.user_id) {
+      switch (role) {
+        case Role.Student:
+          axios
+            .get(
+              process.env.REACT_APP_API_URL +
+                `/api/student/${user.user_id}/courses`
+            )
+            .then((response) => {
+              if (response.data != null && response.data.length) {
+                setCourses(response.data);
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+          break;
+        case Role.Teacher:
+          axios
+            .get(
+              process.env.REACT_APP_API_URL +
+                `/api/teacher/${user.user_id}/courses`
+            )
+            .then((response) => {
+              if (response.data != null && response.data.length) {
+                setCourses(response.data);
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+          break;
+        case Role.ProgramDirector:
+          axios
+            .get(process.env.REACT_APP_API_URL + '/api/pd/courses')
+            .then((response) => {
+              if (response.data != null && response.data.length) {
+                setCourses(response.data);
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+          break;
+        default:
+          setCourses([]);
+          break;
+      }
     }
   }, [role, user.user_id]);
 
@@ -87,15 +102,39 @@ export default function HomePage() {
   }, [getCurrentUserRole, fetchCourses]);
 
   const getTitle = () => {
+    const year = new Date().getFullYear();
     switch (role) {
       case Role.Student:
-        return 'Student Courses 1/2022';
+        return 'Student Courses 1/' + year;
       case Role.Teacher:
-        return 'Teacher Courses 1/2022';
+        return 'Teacher Courses 1/' + year;
       case Role.ProgramDirector:
         return 'Courses';
       default:
-        return 'Student Courses 1/2022';
+        return 'Student Courses 1/' + year;
+    }
+  };
+
+  const calculateGrade = (score) => {
+    console.log(score);
+    if (score >= 90) {
+      return 'A';
+    } else if (score >= 85) {
+      return 'B+';
+    } else if (score >= 80) {
+      return 'B';
+    } else if (score >= 75) {
+      return 'C+';
+    } else if (score >= 70) {
+      return 'C';
+    } else if (score >= 65) {
+      return 'D+';
+    } else if (score >= 60) {
+      return 'D';
+    } else if (score > 0) {
+      return 'F';
+    } else {
+      return 'N/A';
     }
   };
 
@@ -110,17 +149,8 @@ export default function HomePage() {
     }
   };
 
-  const onClickCourse = (id) => {
-    switch (role) {
-      case Role.Student:
-        return navigate(`/student/courses/${id}`);
-      case Role.Teacher:
-        return navigate(`/teacher/courses/${id}`);
-      case Role.ProgramDirector:
-        return navigate(`/programdirector/courses/${id}/statistics`);
-      default:
-        return navigate(`/student/courses/${id}`);
-    }
+  const onClickStudentCourse = (courseId, section) => {
+    navigate(`/student/courses/${courseId}/sections/${section}`);
   };
 
   const onClickTeacherCourse = (courseId, section) => {
@@ -149,11 +179,13 @@ export default function HomePage() {
               case Role.Student:
                 return (
                   <CourseContainer
-                    key={course.id}
-                    code={course.code}
-                    name={course.name}
-                    grade={course.grade}
-                    onClick={() => onClickCourse(course.id)}
+                    key={`${course.course_id}${course.section}`}
+                    code={`${course.course_id} (SEC ${course.section})`}
+                    name={course.course_name}
+                    grade={calculateGrade(course.total)}
+                    onClick={() =>
+                      onClickStudentCourse(course.course_id, course.section)
+                    }
                   ></CourseContainer>
                 );
               case Role.Teacher:
@@ -189,15 +221,7 @@ export default function HomePage() {
                   ></CourseContainer>
                 );
               default:
-                return (
-                  <CourseContainer
-                    key={course.id}
-                    code={course.code}
-                    name={course.name}
-                    grade={course.grade}
-                    onClick={() => onClickCourse(course.id)}
-                  ></CourseContainer>
-                );
+                return <div></div>;
             }
           })}
         </div>

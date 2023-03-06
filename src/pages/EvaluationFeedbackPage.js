@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 import NavBar from '../components/NavBar';
 import DetailBox from '../components/DetailBox';
@@ -10,36 +11,53 @@ import '../Component.css';
 export default function EvaluationFeedbackPage() {
   const navigate = useNavigate();
 
-  const { courseId, evaluationId } = useParams();
+  const { courseId, section, evaluationId } = useParams();
 
-  const [feedback, setFeedback] = useState({});
+  const [user, setUser] = useState({});
+  const [evaluation, setEvaluation] = useState({});
 
   const validationParam = useCallback(() => {
-    if (isNaN(courseId) || courseId <= 0) {
+    if (isNaN(section) || section <= 0) {
       navigate('/home');
     }
     if (isNaN(evaluationId) || evaluationId <= 0) {
-      navigate(`/student/courses/${courseId}`);
+      navigate(`/student/courses/${courseId}/sections/${section}`);
     }
-  }, [courseId, evaluationId, navigate]);
+  }, [courseId, section, evaluationId, navigate]);
+
+  const getCurrentUser = useCallback(() => {
+    let user = localStorage.getItem('user');
+
+    if (user !== null) {
+      user = JSON.parse(user);
+      setUser(user);
+    }
+  }, []);
 
   const fetchFeedback = useCallback(() => {
-    const data = {
-      id: evaluationId,
-      evaluation: 'Quiz',
-      detail:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-      score: 7,
-      fullScore: 10
-    };
-
-    setFeedback(data);
-  }, [evaluationId]);
+    if (user.user_id) {
+      axios
+        .get(
+          process.env.REACT_APP_API_URL +
+            `/api/student/evaluations/${evaluationId}/students/${user.user_id}/feedback`
+        )
+        .then((response) => {
+          if (response.data != null) {
+            setEvaluation(response.data);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          navigate(`/student/courses/${courseId}/sections/${section}`);
+        });
+    }
+  }, [courseId, section, evaluationId, user.user_id, navigate]);
 
   useEffect(() => {
     validationParam();
+    getCurrentUser();
     fetchFeedback();
-  }, [fetchFeedback, validationParam]);
+  }, [getCurrentUser, fetchFeedback, validationParam]);
 
   return (
     <div className="app-container row-container">
@@ -49,9 +67,9 @@ export default function EvaluationFeedbackPage() {
           <h1>Feedback</h1>
         </div>
         <DetailBox
-          title={feedback.evaluation}
-          detail={feedback.detail}
-          score={`${feedback.score}/${feedback.fullScore}`}
+          title={evaluation.evaluation_title}
+          detail={evaluation.feedback || 'No feedback'}
+          score={`${evaluation.eval_received_score}/${evaluation.full_score}`}
         ></DetailBox>
       </div>
     </div>

@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 import NavBar from '../components/NavBar';
 import IconButton from '../components/IconButton';
@@ -21,28 +22,40 @@ const Status = {
 export default function StudentAppealListPage() {
   const navigate = useNavigate();
 
+  const [user, setUser] = useState({});
   const [appeals, setAppeals] = useState([]);
 
-  const fetchAppeals = useCallback(() => {
-    let list = [];
+  const getCurrentUser = useCallback(() => {
+    let user = localStorage.getItem('user');
 
-    for (let index = 0; index < 5; index++) {
-      list.push({
-        id: index + 1,
-        code: 'SUB10' + (index + 1),
-        evaluation: 'Quiz',
-        score: 7,
-        fullScore: 10,
-        status: Status.Pending
-      });
+    if (user !== null) {
+      user = JSON.parse(user);
+      setUser(user);
     }
-
-    setAppeals(list);
   }, []);
 
+  const fetchAppeals = useCallback(() => {
+    if (user.user_id) {
+      axios
+        .get(
+          process.env.REACT_APP_API_URL +
+            `/api/student/appeals/students/${user.user_id}`
+        )
+        .then((response) => {
+          if (response.data != null && response.data.length) {
+            setAppeals(response.data);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }, [user.user_id]);
+
   useEffect(() => {
+    getCurrentUser();
     fetchAppeals();
-  }, [fetchAppeals]);
+  }, [getCurrentUser, fetchAppeals]);
 
   const getStatusIcon = (status) => {
     switch (status) {
@@ -57,8 +70,8 @@ export default function StudentAppealListPage() {
     }
   };
 
-  const onAppealRemark = (id) => {
-    navigate(`/student/appeals/${id}`);
+  const onViewAppeal = (evaluationId) => {
+    navigate(`/student/appeals/evaluations/${evaluationId}`);
   };
 
   return (
@@ -80,17 +93,17 @@ export default function StudentAppealListPage() {
             </thead>
             <tbody>
               {appeals.map((appeal) => (
-                <tr key={appeal.id}>
-                  <td>{appeal.code}</td>
-                  <td>{appeal.evaluation}</td>
+                <tr key={`${appeal.student_id}${appeal.evaluation_id}`}>
+                  <td>{appeal.course_id}</td>
+                  <td>{appeal.evaluation_title}</td>
                   <td>
-                    {appeal.score}/{appeal.fullScore}
+                    {appeal.eval_received_score}/{appeal.full_score}
                   </td>
                   <td>
                     <div className="action-container row-container">
                       <IconButton
                         src={commenticon}
-                        onClick={() => onAppealRemark(appeal.id)}
+                        onClick={() => onViewAppeal(appeal.evaluation_id)}
                       ></IconButton>
                       <IconButton
                         src={getStatusIcon(appeal.status)}

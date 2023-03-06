@@ -15,7 +15,7 @@ export default function CourseContainer({
   const handleClick = (event) => {
     onClick();
   };
-  
+
   return (
     <div
       className="base-component course-container row-container"

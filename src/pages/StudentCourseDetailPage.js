@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 import NavBar from '../components/NavBar';
 import IconButton from '../components/IconButton';
@@ -14,48 +15,66 @@ import exclamationicon from '../assets/images/exclamationmarkicon.png';
 export default function StudentCourseDetailPage() {
   const navigate = useNavigate();
 
-  const { courseId } = useParams();
+  const { courseId, section } = useParams();
 
-  const [courseName, setCourseName] = useState('Mathematics');
+  const [user, setUser] = useState({});
+  const [courseName, setCourseName] = useState('');
   const [evaluations, setEvaluations] = useState([]);
 
   const validationParam = useCallback(() => {
-    if (isNaN(courseId) || courseId <= 0) {
+    if (isNaN(section) || section <= 0) {
       navigate('/home');
     }
-  }, [courseId, navigate]);
+  }, [section, navigate]);
+
+  const getCurrentUser = useCallback(() => {
+    let user = localStorage.getItem('user');
+
+    if (user !== null) {
+      user = JSON.parse(user);
+      setUser(user);
+    }
+  }, []);
 
   const fetchEvaluations = useCallback(() => {
-    let list = [];
-
-    for (let index = 0; index < 5; index++) {
-      list.push({
-        id: index + 1,
-        name: 'Quiz',
-        score: 7,
-        fullScore: 10,
-        rubric: []
-      });
+    if (user.user_id) {
+      axios
+        .get(
+          process.env.REACT_APP_API_URL +
+            `/api/student/${courseId}/sections/${section}/students/${user.user_id}`
+        )
+        .then((response) => {
+          if (response.data != null && response.data.length) {
+            setCourseName(response.data[0].course_name);
+            setEvaluations(response.data);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
-
-    setEvaluations(list);
-  }, []);
+  }, [courseId, section, user.user_id]);
 
   useEffect(() => {
     validationParam();
+    getCurrentUser();
     fetchEvaluations();
-  }, [fetchEvaluations, validationParam]);
+  }, [getCurrentUser, fetchEvaluations, validationParam]);
 
   const onViewStatistics = () => {
-    navigate(`/student/courses/${courseId}/statistics`);
+    navigate(`/student/courses/${courseId}/sections/${section}/statistics`);
   };
 
-  const onViewFeedback = (id) => {
-    navigate(`/student/courses/${courseId}/evaluation/${id}/feedback`);
+  const onViewFeedback = (evaluationId) => {
+    navigate(
+      `/student/courses/${courseId}/sections/${section}/evaluations/${evaluationId}/feedback`
+    );
   };
 
-  const onCreateAppeal = (id) => {
-    navigate(`/student/courses/${courseId}/evaluation/${id}/appeal`);
+  const onCreateAppeal = (evaluationId) => {
+    navigate(
+      `/student/courses/${courseId}/sections/${section}/evaluations/${evaluationId}/appeal`
+    );
   };
 
   return (
@@ -78,19 +97,19 @@ export default function StudentCourseDetailPage() {
             </thead>
             <tbody>
               {evaluations.map((evaluation) => (
-                <tr key={evaluation.id}>
-                  <td>{evaluation.name}</td>
-                  <td>{evaluation.fullScore}</td>
-                  <td>{evaluation.score}</td>
+                <tr key={evaluation.evaluation_id}>
+                  <td>{evaluation.evaluation_title}</td>
+                  <td>{evaluation.full_score}</td>
+                  <td>{evaluation.eval_received_score}</td>
                   <td>
                     <div className="action-container row-container">
                       <IconButton
                         src={commenticon}
-                        onClick={() => onViewFeedback(evaluation.id)}
+                        onClick={() => onViewFeedback(evaluation.evaluation_id)}
                       ></IconButton>
                       <IconButton
                         src={exclamationicon}
-                        onClick={() => onCreateAppeal(evaluation.id)}
+                        onClick={() => onCreateAppeal(evaluation.evaluation_id)}
                       ></IconButton>
                     </div>
                   </td>
