@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 import NavBar from '../components/NavBar';
 import IconButton from '../components/IconButton';
@@ -12,37 +13,57 @@ import addicon from '../assets/images/addicon.png';
 export default function TeacherCourseAddStudentPage() {
   const navigate = useNavigate();
 
-  const { courseId } = useParams();
+  const { courseId, section } = useParams();
 
-  const [courseName, setCourseName] = useState('Mathematics');
+  const [courseName, setCourseName] = useState('');
   const [students, setStudents] = useState([]);
 
   const validationParam = useCallback(() => {
-    if (isNaN(courseId) || courseId <= 0) {
+    if (isNaN(section) || section <= 0) {
       navigate('/home');
     }
-  }, [courseId, navigate]);
+  }, [section, navigate]);
 
   const fetchStudents = useCallback(() => {
-    let list = [];
-
-    for (let index = 0; index < 5; index++) {
-      list.push({
-        id: index + 1,
-        name: 'Alexandria Trival'
+    axios
+      .get(
+        process.env.REACT_APP_API_URL +
+          `/api/teacher/${courseId}/sections/${section}/unregistered`
+      )
+      .then((response) => {
+        if (response.data != null && response.data.length) {
+          setCourseName(response.data[0].course_name);
+          setStudents(response.data);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
       });
-    }
-
-    setStudents(list);
-  }, []);
+  }, [courseId, section]);
 
   useEffect(() => {
     validationParam();
     fetchStudents();
   }, [fetchStudents, validationParam]);
 
-  const onAddStudent = (id) => {
-    alert('add student ' + id);
+  const onAddStudent = (student_id) => {
+    axios
+      .post(
+        process.env.REACT_APP_API_URL +
+          `/api/teacher/${courseId}/sections/${section}/students/add`,
+        {
+          student_id: student_id
+        }
+      )
+      .then((response) => {
+        const list = students.filter(
+          (student) => student.user_id !== student_id
+        );
+        setStudents(list);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
@@ -63,14 +84,14 @@ export default function TeacherCourseAddStudentPage() {
             </thead>
             <tbody>
               {students.map((student) => (
-                <tr key={student.id}>
-                  <td>{student.id}</td>
-                  <td>{student.name}</td>
+                <tr key={student.user_id}>
+                  <td>{student.user_id}</td>
+                  <td>{`${student.first_name} ${student.last_name}`}</td>
                   <td>
                     <div className="action-container row-container">
                       <IconButton
                         src={addicon}
-                        onClick={() => onAddStudent(student.id)}
+                        onClick={() => onAddStudent(student.user_id)}
                       ></IconButton>
                     </div>
                   </td>

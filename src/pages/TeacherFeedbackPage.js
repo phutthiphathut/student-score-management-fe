@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 import NavBar from '../components/NavBar';
 import ReportBox from '../components/ReportBox';
@@ -10,33 +11,60 @@ import '../Component.css';
 export default function TeacherFeedbackPage() {
   const navigate = useNavigate();
 
-  const { courseId, evaluationId } = useParams();
+  const { courseId, section, evaluationId, studentId } = useParams();
 
-  const [feedback, setFeedback] = useState();
+  const [evaluationName, setEvaluationName] = useState('');
+  const [feedback, setFeedback] = useState('');
 
   const validationParam = useCallback(() => {
-    if (isNaN(courseId) || courseId <= 0) {
+    if (isNaN(section) || section <= 0) {
       navigate('/home');
     }
     if (isNaN(evaluationId) || evaluationId <= 0) {
-      navigate(`/teacher/courses/${courseId}`);
+      navigate(`/teacher/courses/${courseId}/sections/${section}`);
     }
-  }, [courseId, evaluationId, navigate]);
+    if (isNaN(studentId) || studentId <= 0) {
+      navigate(`/teacher/courses/${courseId}/sections/${section}`);
+    }
+  }, [courseId, section, evaluationId, studentId, navigate]);
 
   const fetchFeedback = useCallback(() => {
-    const data = {
-      id: 1,
-      evaluation: 'Quiz',
-      detail:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-    };
+    axios
+      .get(
+        process.env.REACT_APP_API_URL +
+          `/api/teacher/evaluations/${evaluationId}/students/${studentId}`
+      )
+      .then((response) => {
+        if (response.data != null) {
+          setEvaluationName(response.data.evaluation_title);
+          setFeedback(response.data.feedback);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        navigate(
+          `/teacher/courses/${courseId}/sections/${section}/students/${studentId}`
+        );
+      });
+  }, [courseId, section, evaluationId, studentId, navigate]);
 
-    setFeedback(data.detail);
-  }, []);
-
-  const sendFeedback = () => {
-    alert(feedback);
-    navigate(`/teacher/courses/${courseId}`);
+  const onSubmitFeedback = () => {
+    axios
+      .put(
+        process.env.REACT_APP_API_URL +
+          `/api/teacher/evaluations/${evaluationId}/students/${studentId}/feedback`,
+        { feedback: feedback }
+      )
+      .then((response) => {
+        if (response.data != null) {
+          navigate(
+            `/teacher/courses/${courseId}/sections/${section}/students/${studentId}`
+          );
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   useEffect(() => {
@@ -53,13 +81,13 @@ export default function TeacherFeedbackPage() {
       <NavBar></NavBar>
       <div className="content-container column-container">
         <div className="body-header-container row-container">
-          <h1>Feedback: {evaluationId}</h1>
+          <h1>Feedback: {evaluationName}</h1>
         </div>
         <ReportBox
           title="Content"
           value={feedback}
           onValueChange={onChangeHandler}
-          onSubmit={sendFeedback}
+          onSubmit={onSubmitFeedback}
         ></ReportBox>
       </div>
     </div>

@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 import NavBar from '../components/NavBar';
 import IconButton from '../components/IconButton';
@@ -13,37 +14,42 @@ import binicon from '../assets/images/binicon.png';
 export default function TeacherCourseStudentDetailPage() {
   const navigate = useNavigate();
 
-  const { courseId, studentId } = useParams();
+  const { courseId, section, studentId } = useParams();
 
-  const [courseName, setCourseName] = useState('Mathematics');
-  const [studentCode, setStudentCode] = useState('10100001');
-  const [studentName, setStudentName] = useState('Alexandria Trival');
+  const [courseName, setCourseName] = useState('');
+  const [studentCode, setStudentCode] = useState('');
+  const [studentName, setStudentName] = useState('');
   const [evaluations, setEvaluations] = useState([]);
 
   const validationParam = useCallback(() => {
-    if (isNaN(courseId) || courseId <= 0) {
+    if (isNaN(section) || section <= 0) {
       navigate('/home');
     }
     if (isNaN(studentId) || studentId <= 0) {
-      navigate(`/teacher/courses/${courseId}`);
+      navigate(`/teacher/courses/${courseId}/sections/${section}`);
     }
-  }, [courseId, studentId, navigate]);
+  }, [courseId, section, studentId, navigate]);
 
   const fetchEvaluations = useCallback(() => {
-    let list = [];
-
-    for (let index = 0; index < 5; index++) {
-      list.push({
-        id: index + 1,
-        name: 'Quiz',
-        score: 7,
-        fullScore: 10,
-        rubric: []
+    axios
+      .get(
+        process.env.REACT_APP_API_URL +
+          `/api/teacher/${courseId}/sections/${section}/students/${studentId}`
+      )
+      .then((response) => {
+        if (response.data != null && response.data.length) {
+          setCourseName(response.data[0].course_name);
+          setStudentCode(response.data[0].user_id);
+          setStudentName(
+            `${response.data[0].first_name} ${response.data[0].last_name}`
+          );
+          setEvaluations(response.data);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
       });
-    }
-
-    setEvaluations(list);
-  }, []);
+  }, [courseId, section, studentId]);
 
   useEffect(() => {
     validationParam();
@@ -51,15 +57,46 @@ export default function TeacherCourseStudentDetailPage() {
   }, [fetchEvaluations, validationParam]);
 
   const onDeleteStudent = () => {
-    alert('Student deleted');
+    axios
+      .post(
+        process.env.REACT_APP_API_URL +
+          `/api/teacher/${courseId}/sections/${section}/students/remove`,
+        {
+          student_id: studentId
+        }
+      )
+      .then((response) => {
+        navigate(`/teacher/courses/${courseId}/sections/${section}`);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
-  const onSaveScore = (id, score) => {
-    console.log(id, score);
-  };
+  const onSaveScore = useCallback(
+    (evaluationId, score) => {
+      axios
+        .put(
+          process.env.REACT_APP_API_URL +
+            `/api/teacher/evaluations/${evaluationId}/students/${studentId}/score`,
+          { score: score }
+        )
+        .then((response) => {
+          if (response.data != null) {
+            fetchEvaluations();
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    [studentId, fetchEvaluations]
+  );
 
-  const onViewFeedback = (id) => {
-    navigate(`/teacher/courses/${courseId}/evaluation/${id}/feedback`);
+  const onViewFeedback = (evaluationId) => {
+    navigate(
+      `/teacher/courses/${courseId}/sections/${section}/evaluations/${evaluationId}/students/${studentCode}/feedback`
+    );
   };
 
   return (
@@ -88,7 +125,7 @@ export default function TeacherCourseStudentDetailPage() {
             <tbody>
               {evaluations.map((evaluation) => (
                 <EditableScoreRow
-                  key={evaluation.id}
+                  key={evaluation.evaluation_id}
                   evaluation={evaluation}
                   onSaveScore={onSaveScore}
                   onViewFeedback={onViewFeedback}

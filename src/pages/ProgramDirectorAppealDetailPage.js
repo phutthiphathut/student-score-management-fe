@@ -46,7 +46,7 @@ export default function ProgramDirectorAppealDetailPage() {
     axios
       .get(
         process.env.REACT_APP_API_URL +
-          `/api/appeals/student/${studentId}/evaluation/${evaluationId}`
+          `/api/pd/appeals/student/${studentId}/evaluation/${evaluationId}`
       )
       .then((response) => {
         if (response.data != null) {
@@ -57,7 +57,7 @@ export default function ProgramDirectorAppealDetailPage() {
         console.log(error);
         navigate('/programdirector/appeals');
       });
-  }, []);
+  }, [studentId, evaluationId, navigate]);
 
   useEffect(() => {
     validationParam();
@@ -73,7 +73,7 @@ export default function ProgramDirectorAppealDetailPage() {
       axios
         .put(
           process.env.REACT_APP_API_URL +
-            `/api/appeals/student/${studentId}/evaluation/${evaluationId}/status`,
+            `/api/pd/appeals/student/${studentId}/evaluation/${evaluationId}/status`,
           { pd_id: user.user_id, status: Status.Accepted }
         )
         .then((response) => {
@@ -98,7 +98,7 @@ export default function ProgramDirectorAppealDetailPage() {
       axios
         .put(
           process.env.REACT_APP_API_URL +
-            `/api/appeals/student/${studentId}/evaluation/${evaluationId}/status`,
+            `/api/pd/appeals/student/${studentId}/evaluation/${evaluationId}/status`,
           { pd_id: user.user_id, status: Status.Denied }
         )
         .then((response) => {

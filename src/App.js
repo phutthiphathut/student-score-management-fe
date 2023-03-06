@@ -49,19 +49,19 @@ export default function App() {
           element={<EvaluationAppealPage />}
         />
         <Route
-          path="teacher/courses/:courseId"
+          path="teacher/courses/:courseId/sections/:section"
           element={<TeacherCourseDetailPage />}
         />
         <Route
-          path="teacher/courses/:courseId/students/:studentId"
+          path="teacher/courses/:courseId/sections/:section/students/:studentId"
           element={<TeacherCourseStudentDetailPage />}
         />
         <Route
-          path="teacher/courses/:courseId/students/add"
+          path="teacher/courses/:courseId/sections/:section/students/add"
           element={<TeacherCourseAddStudentPage />}
         />
         <Route
-          path="teacher/courses/:courseId/evaluation/:evaluationId/feedback"
+          path="teacher/courses/:courseId/sections/:section/evaluations/:evaluationId/students/:studentId/feedback"
           element={<TeacherFeedbackPage />}
         />
         <Route

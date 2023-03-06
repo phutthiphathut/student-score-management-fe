@@ -48,8 +48,10 @@
 
 .score-input-box {
   padding: 10px 0;
-  width: 65px;
+  width: 100%;
   text-align: center;
+  font-size: 28px;
+  font-weight: 500;
 }
 
 .text-area-box {
@@ -167,18 +169,20 @@ button:hover {
 }
 
 .course-title {
-  flex: 5;
+  flex: 3;
   align-items: start;
+  text-align: start;
 }
 
 .course-time {
-  flex: 2;
+  flex: 3;
   margin-top: auto;
   align-items: start;
+  text-align: start;
 }
 
 .course-arrow {
-  flex: 4;
+  flex: 1;
   justify-content: end;
   align-items: center;
 }

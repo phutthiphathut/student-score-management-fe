@@ -29,7 +29,7 @@ export default function ProgramDirectorCourseStatisticsPage() {
   const [courseCode, setCourseCode] = useState('');
   const [courseSection, setCourseSection] = useState('');
   const [courseName, setCourseName] = useState('');
-  const [evaluations, setEvaluations] = useState([]);
+  const [students, setStudents] = useState([]);
   const [statistics, setStatistics] = useState(defaultStatistics);
 
   const validationParam = useCallback(() => {
@@ -38,31 +38,30 @@ export default function ProgramDirectorCourseStatisticsPage() {
     }
   }, [section, navigate]);
 
-  const fetchEvaluations = useCallback(() => {
+  const fetchStudentScores = useCallback(() => {
     axios
       .get(
         process.env.REACT_APP_API_URL +
-          `/api/courses/${courseId}/sections/${section}/evaluations`
+          `/api/pd/${courseId}/sections/${section}/students/score`
       )
       .then((response) => {
         if (response.data != null && response.data.length) {
           setCourseCode(response.data[0].course_id);
           setCourseSection(response.data[0].section);
           setCourseName(response.data[0].course_name);
-          setEvaluations(response.data);
+          setStudents(response.data);
+          calculateStatistics(response.data);
         }
       })
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  }, [courseId, section]);
 
-  const calculateStatistics = useCallback(() => {
+  const calculateStatistics = (list) => {
     const data = defaultStatistics;
 
-    const values = evaluations.map((evaluation) =>
-      Number(evaluation.average_score)
-    );
+    const values = list.map((student) => Number(student.total));
 
     if (values.length > 0) {
       const sum = values.reduce((acc, val) => acc + val, 0);
@@ -123,16 +122,12 @@ export default function ProgramDirectorCourseStatisticsPage() {
     }
 
     setStatistics(data);
-  }, [evaluations]);
+  };
 
   useEffect(() => {
     validationParam();
-    fetchEvaluations();
-  }, [fetchEvaluations, validationParam]);
-
-  useEffect(() => {
-    calculateStatistics();
-  }, [evaluations, calculateStatistics]);
+    fetchStudentScores();
+  }, [fetchStudentScores, validationParam]);
 
   return (
     <div className="app-container row-container">
@@ -147,10 +142,10 @@ export default function ProgramDirectorCourseStatisticsPage() {
           </h1>
         </div>
         <VerticleBarGraph
-          dataset={evaluations.map((evaluation) => {
+          dataset={students.map((student) => {
             return {
-              title: evaluation.evaluation_title,
-              value: evaluation.average_score
+              title: `${student.first_name} ${student.last_name}`,
+              value: student.total
             };
           })}
         ></VerticleBarGraph>

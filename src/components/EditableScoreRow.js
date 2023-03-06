@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 
 import IconButton from './IconButton';
-import InputBox from './InputBox';
 
 import '../App.css';
 import '../Component.css';
@@ -16,11 +15,11 @@ export default function EditableScoreRow({
   onViewFeedback
 }) {
   const [isEditing, setIsEditing] = useState(false);
-  const [score, setScore] = useState(evaluation.score);
+  const [score, setScore] = useState(evaluation.eval_received_score);
 
   const onClickSaveScore = () => {
     setIsEditing(false);
-    onSaveScore(evaluation.id, score);
+    onSaveScore(evaluation.evaluation_id, score);
   };
 
   const onScoreChange = (event) => {
@@ -28,19 +27,21 @@ export default function EditableScoreRow({
   };
 
   return (
-    <tr key={evaluation.id}>
-      <td>{evaluation.name}</td>
-      <td>{evaluation.fullScore}</td>
-      {!isEditing && <td>{evaluation.score}</td>}
+    <tr key={evaluation.evaluation_id}>
+      <td>{evaluation.evaluation_title}</td>
+      <td>{evaluation.full_score}</td>
+      {!isEditing && <td>{evaluation.eval_received_score}</td>}
       {isEditing && (
-        <div className="action-container row-container">
-          <input
-            className="base-component score-input-box"
-            type="number"
-            value={score}
-            onChange={onScoreChange}
-          />
-        </div>
+        <td>
+          <div className="action-container row-container">
+            <input
+              className="base-component score-input-box"
+              type="number"
+              value={score}
+              onChange={onScoreChange}
+            />
+          </div>
+        </td>
       )}
       <td>
         <div className="action-container row-container">
@@ -55,7 +56,7 @@ export default function EditableScoreRow({
           )}
           <IconButton
             src={commenticon}
-            onClick={() => onViewFeedback(evaluation.id)}
+            onClick={() => onViewFeedback(evaluation.evaluation_id)}
           ></IconButton>
         </div>
       </td>

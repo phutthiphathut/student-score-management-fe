@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 import NavBar from '../components/NavBar';
 import IconButton from '../components/IconButton';
@@ -13,30 +14,33 @@ import addicon from '../assets/images/addicon.png';
 export default function TeacherCourseDetailPage() {
   const navigate = useNavigate();
 
-  const { courseId } = useParams();
+  const { courseId, section } = useParams();
 
-  const [courseName, setCourseName] = useState('Mathematics');
+  const [courseName, setCourseName] = useState('');
   const [students, setStudents] = useState([]);
 
   const validationParam = useCallback(() => {
-    if (isNaN(courseId) || courseId <= 0) {
+    if (isNaN(section) || section <= 0) {
       navigate('/home');
     }
-  }, [courseId, navigate]);
+  }, [section, navigate]);
 
   const fetchStudents = useCallback(() => {
-    let list = [];
-
-    for (let index = 0; index < 5; index++) {
-      list.push({
-        id: index + 1,
-        name: 'Alexandria Trival',
-        score: Math.floor(Math.random() * 10) + 1
+    axios
+      .get(
+        process.env.REACT_APP_API_URL +
+          `/api/teacher/${courseId}/sections/${section}/students`
+      )
+      .then((response) => {
+        if (response.data != null && response.data.length) {
+          setCourseName(response.data[0].course_name);
+          setStudents(response.data);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
       });
-    }
-
-    setStudents(list);
-  }, []);
+  }, [courseId, section]);
 
   useEffect(() => {
     validationParam();
@@ -44,11 +48,11 @@ export default function TeacherCourseDetailPage() {
   }, [fetchStudents, validationParam]);
 
   const onAddStudent = () => {
-    navigate(`/teacher/courses/${courseId}/students/add`);
+    navigate(`/teacher/courses/${courseId}/sections/${section}/students/add`);
   };
 
   const onClickStudent = (id) => {
-    navigate(`/teacher/courses/${courseId}/students/${id}`);
+    navigate(`/teacher/courses/${courseId}/sections/${section}/students/${id}`);
   };
 
   return (
@@ -69,15 +73,15 @@ export default function TeacherCourseDetailPage() {
             </thead>
             <tbody>
               {students.map((student) => (
-                <tr key={student.id}>
-                  <td>{student.id}</td>
-                  <td>{student.name}</td>
+                <tr key={student.user_id}>
+                  <td>{student.user_id}</td>
+                  <td>{`${student.first_name} ${student.last_name}`}</td>
                   <td>
                     <div className="action-container row-container">
-                      {student.score}
+                      {student.total}
                       <IconButton
                         src={informationicon}
-                        onClick={() => onClickStudent(student.id)}
+                        onClick={() => onClickStudent(student.user_id)}
                       ></IconButton>
                     </div>
                   </td>

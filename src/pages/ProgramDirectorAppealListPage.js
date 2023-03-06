@@ -26,7 +26,7 @@ export default function ProgramDirectorAppealListPage() {
 
   const fetchAppeals = useCallback(() => {
     axios
-      .get(process.env.REACT_APP_API_URL + '/api/appeals')
+      .get(process.env.REACT_APP_API_URL + '/api/pd/appeals')
       .then((response) => {
         if (response.data != null && response.data.length) {
           setAppeals(response.data);

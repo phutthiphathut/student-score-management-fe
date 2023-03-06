@@ -20,6 +20,7 @@ const Role = {
 export default function HomePage() {
   const navigate = useNavigate();
 
+  const [user, setUser] = useState({});
   const [role, setRole] = useState(Role.Student);
   const [courses, setCourses] = useState([]);
 
@@ -28,6 +29,7 @@ export default function HomePage() {
 
     if (user !== null) {
       user = JSON.parse(user);
+      setUser(user);
 
       switch (user.role) {
         case 'student':
@@ -40,17 +42,30 @@ export default function HomePage() {
           return setRole(Role.Student);
       }
     }
-  }, [role]);
+  }, []);
 
   const fetchCourses = useCallback(() => {
     switch (role) {
       case Role.Student:
         break;
       case Role.Teacher:
+        axios
+          .get(
+            process.env.REACT_APP_API_URL +
+              `/api/teacher/${user.user_id}/courses`
+          )
+          .then((response) => {
+            if (response.data != null && response.data.length) {
+              setCourses(response.data);
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
         break;
       case Role.ProgramDirector:
         axios
-          .get(process.env.REACT_APP_API_URL + '/api/courses')
+          .get(process.env.REACT_APP_API_URL + '/api/pd/courses')
           .then((response) => {
             if (response.data != null && response.data.length) {
               setCourses(response.data);
@@ -64,7 +79,7 @@ export default function HomePage() {
         setCourses([]);
         break;
     }
-  }, [role]);
+  }, [role, user.user_id]);
 
   useEffect(() => {
     getCurrentUserRole();
@@ -108,8 +123,14 @@ export default function HomePage() {
     }
   };
 
+  const onClickTeacherCourse = (courseId, section) => {
+    navigate(`/teacher/courses/${courseId}/sections/${section}`);
+  };
+
   const onClickProgramDirectorCourse = (courseId, section) => {
-    navigate(`/programdirector/courses/${courseId}/sections/${section}/statistics`);
+    navigate(
+      `/programdirector/courses/${courseId}/sections/${section}/statistics`
+    );
   };
 
   return (
@@ -138,11 +159,19 @@ export default function HomePage() {
               case Role.Teacher:
                 return (
                   <CourseContainer
-                    key={course.id}
-                    code={course.code}
-                    name={course.name}
-                    time={course.time}
-                    onClick={() => onClickCourse(course.id)}
+                    key={`${course.course_id}${course.section}`}
+                    code={`${course.course_id} (SEC ${course.section})`}
+                    name={course.course_name}
+                    time={`${course.day_of_week.substring(
+                      0,
+                      3
+                    )}: ${course.start_time.substring(
+                      0,
+                      5
+                    )} - ${course.end_time.substring(0, 5)}`}
+                    onClick={() =>
+                      onClickTeacherCourse(course.course_id, course.section)
+                    }
                   ></CourseContainer>
                 );
               case Role.ProgramDirector:
